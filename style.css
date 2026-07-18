@@ -1,0 +1,467 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    background: #0d0d0d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 500px;
+    max-height: 800px;
+    background: #1a1a2e;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+/* ----- TÜM SAHNELER ORTAK ----- */
+.scene {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.8s ease;
+}
+
+.scene.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cat {
+    font-size: 50px;
+    position: absolute;
+    z-index: 10;
+}
+
+.score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+}
+
+.hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+    z-index: 15;
+}
+
+.action-btn {
+    padding: 16px 48px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 60px;
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 20;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn:hover {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: #ffd700;
+    transform: scale(1.04);
+}
+
+.story-text {
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    padding: 20px 30px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    max-width: 80%;
+    z-index: 15;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* ----- SAHNE 1: SOKAK (3 ŞERİT) ----- */
+#scene-sokak {
+    background: #87CEEB;
+    justify-content: flex-end;
+}
+
+.road {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 70%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-bottom: 20px;
+}
+
+.lane {
+    width: 30%;
+    height: 100%;
+    border-left: 2px dashed rgba(255, 255, 255, 0.3);
+    border-right: 2px dashed rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.lane-left {
+    border-left: none;
+}
+
+.lane-right {
+    border-right: none;
+}
+
+#cat-sokak {
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: left 0.2s ease;
+}
+
+/* ----- SAHNE 2: ORMAN ----- */
+#scene-orman {
+    background: #1a2e1a;
+    justify-content: center;
+}
+
+.forest-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 30%, #2a4a2a, #0d1a0d);
+    z-index: 0;
+}
+
+#cat-orman {
+    font-size: 80px;
+    z-index: 5;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+#story-orman {
+    z-index: 10;
+}
+
+#btn-orman {
+    z-index: 10;
+}
+
+/* ----- SAHNE 3: ARABA (ÜSTTEN) ----- */
+#scene-araba {
+    background: #2d5a3d;
+    justify-content: center;
+}
+
+.road-topdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(90deg,
+            #4a7c59 0px,
+            #4a7c59 80px,
+            #3a6a4a 80px,
+            #3a6a4a 160px);
+    z-index: 0;
+}
+
+#car {
+    position: absolute;
+    font-size: 60px;
+    z-index: 10;
+    transition: transform 0.1s ease;
+}
+
+#hole {
+    position: absolute;
+    bottom: 20%;
+    right: 10%;
+    font-size: 80px;
+    z-index: 5;
+    opacity: 0.7;
+}
+
+/* ----- SAHNE 4: YERALTI (KÖSTEBEK) ----- */
+#scene-yeralti {
+    background: #1a0b0b;
+    justify-content: center;
+}
+
+.underground-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, #2a1a1a, #0a0505);
+    z-index: 0;
+}
+
+#moles-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    z-index: 10;
+    width: 80%;
+    max-width: 300px;
+}
+
+.mole {
+    width: 80px;
+    height: 80px;
+    background: #3a2a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 3px solid #5a3a2a;
+    box-shadow: inset 0 -10px 0 #2a1a0a;
+}
+
+.mole.active {
+    background: #5a3a2a;
+    border-color: #8a5a3a;
+}
+
+#mole-score {
+    top: 20px;
+    right: 20px;
+    left: auto;
+}
+
+/* ----- SAHNE 5: UZAY (METEOR) ----- */
+#scene-uzay {
+    background: #0b0b2a;
+    justify-content: center;
+}
+
+.space-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 40%, #1a1a4a, #0b0b1a);
+    z-index: 0;
+}
+
+#ship {
+    position: absolute;
+    font-size: 60px;
+    z-index: 10;
+    transition: transform 0.1s ease;
+}
+
+/* ----- SAHNE 6: UZAYLI SAVAŞI ----- */
+#scene-uzayli {
+    background: #0b0b2a;
+    justify-content: center;
+}
+
+#ship-uzayli {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 60px;
+    z-index: 10;
+}
+
+#aliens-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+}
+
+.alien {
+    position: absolute;
+    font-size: 50px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    animation: alien-float 2s ease-in-out infinite;
+}
+
+.alien:hover {
+    transform: scale(1.2);
+}
+
+@keyframes alien-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+#alien-score {
+    top: 20px;
+    right: 20px;
+    left: auto;
+}
+
+/* ----- SAHNE 7: RETRO PİXEL ----- */
+#scene-retro {
+    background: #0a0a2a;
+    justify-content: flex-end;
+}
+
+.retro-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg,
+            #1a1a3a 0px,
+            #1a1a3a 4px,
+            #2a2a4a 4px,
+            #2a2a4a 8px);
+    z-index: 0;
+}
+
+#retro-cat {
+    position: absolute;
+    bottom: 30px;
+    left: 50px;
+    font-size: 40px;
+    z-index: 10;
+    transition: left 0.1s ease;
+}
+
+#retro-platforms {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+}
+
+.platform {
+    position: absolute;
+    background: #4a4a7a;
+    border: 2px solid #6a6a9a;
+    border-radius: 4px;
+    box-shadow: inset 0 4px 0 #2a2a5a;
+    z-index: 5;
+}
+
+/* ----- SAHNE 8: LABORATUVAR ----- */
+#scene-lab {
+    background: #000;
+    justify-content: center;
+}
+
+.lab-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, #0a0a0a, #000);
+    z-index: 0;
+}
+
+.lab-text {
+    color: #fff;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    animation: flicker 0.1s infinite alternate;
+    z-index: 10;
+    letter-spacing: 4px;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.8;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+        opacity: 1;
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    }
+}
+
+/* ----- MOBİL UYUM ----- */
+@media (max-width: 600px) {
+    #game-container {
+        border-radius: 0;
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .story-text {
+        font-size: 18px;
+        padding: 16px 20px;
+    }
+    .action-btn {
+        font-size: 18px;
+        padding: 12px 30px;
+    }
+    .mole {
+        width: 60px;
+        height: 60px;
+        font-size: 36px;
+    }
+    .lab-text {
+        font-size: 32px;
+    }
+}
