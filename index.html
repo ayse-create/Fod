@@ -3,30 +3,353 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>🐱 Kedi’nin Macerası</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>🐱 Kedi Sokakta</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #game {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      max-width: 500px;
+      max-height: 800px;
+      background: #87CEEB;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    #ground {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 80px;
+      background: #4a7c59;
+      border-top: 4px solid #2d5a3d;
+      z-index: 2;
+    }
+    #ground-line {
+      position: absolute;
+      top: -10px;
+      width: 100%;
+      height: 4px;
+      background: #f0e68c;
+      opacity: 0.3;
+    }
+    #cat {
+      position: absolute;
+      bottom: 80px;
+      left: 50px;
+      width: 50px;
+      height: 50px;
+      z-index: 10;
+      transition: none;
+      font-size: 50px;
+      line-height: 1;
+    }
+    #cat.jump {
+      animation: jump 0.4s ease;
+    }
+    @keyframes jump {
+      0% { bottom: 80px; }
+      50% { bottom: 200px; }
+      100% { bottom: 80px; }
+    }
+    .obstacle {
+      position: absolute;
+      bottom: 80px;
+      font-size: 40px;
+      z-index: 5;
+      animation: slide 3s linear forwards;
+    }
+    @keyframes slide {
+      from { right: -60px; }
+      to { right: 110%; }
+    }
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      z-index: 20;
+    }
+    #game-over {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 30;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    #game-over h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    #game-over p {
+      font-size: 20px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+    #restart-btn {
+      padding: 14px 40px;
+      background: #ffd700;
+      border: none;
+      border-radius: 60px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #1a1a2e;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 30px rgba(255,215,0,0.3);
+    }
+    #restart-btn:hover {
+      transform: scale(1.05);
+    }
+    #scene-label {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      background: rgba(0,0,0,0.3);
+      padding: 4px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+      z-index: 15;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    #mobile-controls {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 25;
+      pointer-events: none;
+    }
+    .ctrl-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: white;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      touch-action: none;
+    }
+    .ctrl-btn:active {
+      transform: scale(0.85);
+      background: rgba(255,255,255,0.3);
+    }
+    @media (min-width: 600px) {
+      #mobile-controls { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-  <div id="game">
-    <!-- Arka Plan Katmanı -->
-    <div id="bg-layer"></div>
+<div id="game">
+  <div id="ground"><div id="ground-line"></div></div>
+  <div id="cat">🐱</div>
+  <div id="score">🏆 0</div>
+  <div id="scene-label">🏙️ Sokak</div>
 
-    <!-- Karakter -->
-    <div id="character">
-      <img src="1photo.png" alt="Karakter" id="char-img" />
-    </div>
-
-    <!-- Hikaye Metni -->
-    <div id="story-text">Bir kedi gördün. Peşinden gitmek ister misin?</div>
-
-    <!-- Etkileşim Butonu -->
-    <div id="action-btn">🐾 Takip Et</div>
-
-    <!-- Mobil İpucu -->
-    <div id="touch-hint">⬆ Zıpla &nbsp;·&nbsp; ⬇ Takla &nbsp;·&nbsp; ⬅➡ Hareket</div>
+  <div id="mobile-controls">
+    <div class="ctrl-btn" id="jump-btn">⬆</div>
+    <div class="ctrl-btn" id="restart-mobile">🔄</div>
   </div>
 
-  <script src="script.js"></script>
+  <div id="game-over">
+    <h1>💀</h1>
+    <p>Kedi kayboldu...</p>
+    <button id="restart-btn">🔄 Tekrar Dene</button>
+  </div>
+</div>
+
+<script>
+  // -------- OYUN DEĞİŞKENLERİ --------
+  const cat = document.getElementById('cat');
+  const game = document.getElementById('game');
+  const scoreDisplay = document.getElementById('score');
+  const gameOver = document.getElementById('game-over');
+  const restartBtn = document.getElementById('restart-btn');
+  const restartMobile = document.getElementById('restart-mobile');
+  const jumpBtn = document.getElementById('jump-btn');
+  const sceneLabel = document.getElementById('scene-label');
+
+  let score = 0;
+  let gameRunning = true;
+  let obstacleInterval = null;
+  let speed = 3;
+  let sceneIndex = 0;
+
+  // -------- SAHNELER --------
+  const scenes = [
+    { bg: '#87CEEB', ground: '#4a7c59', label: '🏙️ Sokak', obstacle: '📦' },
+    { bg: '#2d5a3d', ground: '#1a3a1a', label: '🌳 Park', obstacle: '🌲' },
+    { bg: '#4a90d9', ground: '#2a5a7a', label: '🌊 Deniz', obstacle: '⛵' },
+    { bg: '#1a2e1a', ground: '#0d1a0d', label: '🌿 Orman', obstacle: '🪵' },
+    { bg: '#0b0b2a', ground: '#1a1a3a', label: '🚀 Uzay', obstacle: '☄️' },
+  ];
+
+  // -------- OYUN BAŞLAT --------
+  function startGame() {
+    gameOver.style.display = 'none';
+    gameRunning = true;
+    score = 0;
+    speed = 3;
+    sceneIndex = 0;
+    updateScore();
+    updateScene();
+    clearObstacles();
+    if (obstacleInterval) clearInterval(obstacleInterval);
+    obstacleInterval = setInterval(spawnObstacle, 2000);
+    cat.style.bottom = '80px';
+  }
+
+  // -------- SAHNE GÜNCELLE --------
+  function updateScene() {
+    const scene = scenes[sceneIndex % scenes.length];
+    game.style.background = scene.bg;
+    document.getElementById('ground').style.background = scene.ground;
+    sceneLabel.textContent = scene.label + ' 🐾';
+  }
+
+  // -------- ENGEL OLUŞTUR --------
+  function spawnObstacle() {
+    if (!gameRunning) return;
+    const scene = scenes[sceneIndex % scenes.length];
+    const obstacle = document.createElement('div');
+    obstacle.className = 'obstacle';
+    obstacle.textContent = scene.obstacle;
+    obstacle.style.animationDuration = (3 / speed) + 's';
+    game.appendChild(obstacle);
+
+    setTimeout(() => {
+      if (obstacle.parentNode) obstacle.remove();
+    }, 4000);
+
+    // Çarpışma kontrolü (her 50ms)
+    const checkCollision = setInterval(() => {
+      if (!gameRunning) {
+        clearInterval(checkCollision);
+        return;
+      }
+      const catRect = cat.getBoundingClientRect();
+      const obsRect = obstacle.getBoundingClientRect();
+      if (
+        catRect.left < obsRect.left + obsRect.width &&
+        catRect.left + catRect.width > obsRect.left &&
+        catRect.top < obsRect.top + obsRect.height &&
+        catRect.top + catRect.height > obsRect.top
+      ) {
+        gameOverHandler();
+        clearInterval(checkCollision);
+      }
+    }, 50);
+  }
+
+  // -------- OYUN BİTİŞ --------
+  function gameOverHandler() {
+    gameRunning = false;
+    gameOver.style.display = 'flex';
+    if (obstacleInterval) clearInterval(obstacleInterval);
+  }
+
+  // -------- PUAN GÜNCELLE --------
+  function updateScore() {
+    scoreDisplay.textContent = '🏆 ' + score;
+  }
+
+  // -------- ENGEL TEMİZLE --------
+  function clearObstacles() {
+    document.querySelectorAll('.obstacle').forEach(el => el.remove());
+  }
+
+  // -------- ZIPLAMA --------
+  function jump() {
+    if (!gameRunning) return;
+    if (cat.classList.contains('jump')) return;
+    cat.classList.add('jump');
+    setTimeout(() => {
+      cat.classList.remove('jump');
+    }, 400);
+    score++;
+    updateScore();
+
+    // Her 5 puanda bir sahne değişir
+    if (score % 5 === 0 && score > 0) {
+      sceneIndex++;
+      updateScene();
+      speed += 0.3;
+      // Engelleri temizle ve yeni hızda başlat
+      clearObstacles();
+      if (obstacleInterval) {
+        clearInterval(obstacleInterval);
+        obstacleInterval = setInterval(spawnObstacle, Math.max(800, 2000 - speed * 100));
+      }
+    }
+  }
+
+  // -------- OLAYLAR --------
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w') {
+      e.preventDefault();
+      jump();
+    }
+    if (e.key === 'r' || e.key === 'R') {
+      startGame();
+    }
+  });
+
+  jumpBtn.addEventListener('click', jump);
+  jumpBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    jump();
+  });
+
+  restartBtn.addEventListener('click', startGame);
+  restartMobile.addEventListener('click', startGame);
+
+  // -------- BAŞLAT --------
+  startGame();
+</script>
+
 </body>
 </html>
