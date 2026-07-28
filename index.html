@@ -1,84 +1,45 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>🐱 Kedi'nin Macerası</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐱 100 Hızında Kedi</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+    body { background: #f0f0f0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+    #game { position: relative; width: 100vw; height: 100vh; max-width: 800px; max-height: 800px; background: #f0f0f0; border-radius: 24px; overflow: hidden; border: 2px solid #e0e0e0; }
+    #cat { position: fixed; pointer-events: none; z-index: 999; font-size: 48px; transform: translate(-50%, -50%); }
+    #info { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 18px; font-weight: 600; color: #333; background: rgba(255,255,255,0.8); padding: 8px 20px; border-radius: 30px; backdrop-filter: blur(4px); border: 1px solid #e0e0e0; }
+  </style>
 </head>
 <body>
+  <div id="game"></div>
+  <div id="cat">🐱</div>
+  <div id="info">⚡ Kedi 100 hızında koşuyor!</div>
 
-    <!-- Oyun Konteynırı -->
-    <div id="game-container">
+  <script>
+    const cat = document.getElementById('cat');
+    let catX = 100, catY = 100;
+    let speedX = 5, speedY = 3; // 100 hızı hissi için yüksek hareket
 
-        <!-- SAHNE 1: SOKAK (3 ŞERİT) -->
-        <div id="scene-sokak" class="scene active">
-            <div class="road">
-                <div class="lane lane-left"></div>
-                <div class="lane lane-center"></div>
-                <div class="lane lane-right"></div>
-            </div>
-            <div id="cat-sokak" class="cat">🐱</div>
-            <div id="score-sokak" class="score">🏆 0</div>
-            <div id="hint-sokak" class="hint">⬅️ ➡️ Kaydır / Oklar ile şerit değiştir · ⬆️ Zıpla</div>
-        </div>
+    function update() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
 
-        <!-- SAHNE 2: ORMAN (YÜRÜYÜŞ) -->
-        <div id="scene-orman" class="scene">
-            <div class="forest-bg"></div>
-            <div id="cat-orman" class="cat">🐱</div>
-            <div id="story-orman" class="story-text">Kedi seni ormanda takip etmeye çağırıyor...</div>
-            <button id="btn-orman" class="action-btn">🐾 Takip Et</button>
-        </div>
+      catX += speedX * 1.5;
+      catY += speedY * 1.5;
 
-        <!-- SAHNE 3: ARABA (ÜSTTEN GÖRÜNÜM) -->
-        <div id="scene-araba" class="scene">
-            <div class="road-topdown"></div>
-            <div id="car" class="car">🚗</div>
-            <div id="hole" class="hole">🕳️</div>
-            <div id="car-hint" class="hint">⬆️ İleri · ⬇️ Geri · ⬅️➡️ Direksiyon</div>
-        </div>
+      // Duvarlardan sektirme
+      if (catX > w - 40 || catX < 40) speedX *= -1;
+      if (catY > h - 40 || catY < 40) speedY *= -1;
 
-        <!-- SAHNE 4: YERALTI (KÖSTEBEK) -->
-        <div id="scene-yeralti" class="scene">
-            <div class="underground-bg"></div>
-            <div id="moles-container"></div>
-            <div id="mole-score" class="score">🔨 0 / 8</div>
-            <div id="mole-hint" class="hint">👆 Köstebeklere vur!</div>
-        </div>
+      cat.style.left = catX + 'px';
+      cat.style.top = catY + 'px';
 
-        <!-- SAHNE 5: UZAY (METEOR) -->
-        <div id="scene-uzay" class="scene">
-            <div class="space-bg"></div>
-            <div id="ship" class="ship">🚀</div>
-            <div id="space-score" class="score">💫 0</div>
-        </div>
+      requestAnimationFrame(update);
+    }
 
-        <!-- SAHNE 6: UZAYLI SAVAŞI -->
-        <div id="scene-uzayli" class="scene">
-            <div class="space-bg"></div>
-            <div id="ship-uzayli" class="ship">🚀</div>
-            <div id="aliens-container"></div>
-            <div id="alien-score" class="score">👾 0</div>
-            <div id="alien-hint" class="hint">🎯 Uzaylılara tıkla / Space ile ateş et!</div>
-        </div>
-
-        <!-- SAHNE 7: RETRO PİXEL -->
-        <div id="scene-retro" class="scene">
-            <div class="retro-bg"></div>
-            <div id="retro-cat" class="retro-cat">🐱</div>
-            <div id="retro-platforms"></div>
-            <div id="retro-hint" class="hint">⬅️ ➡️ Hareket · ⬆️ Zıpla</div>
-        </div>
-
-        <!-- SAHNE 8: LABORATUVAR -->
-        <div id="scene-lab" class="scene">
-            <div class="lab-bg"></div>
-            <div id="lab-text" class="lab-text">🧪 TO BE CONTINUED...</div>
-        </div>
-
-    </div>
-
-    <script src="main.js"></script>
+    update();
+  </script>
 </body>
 </html>
