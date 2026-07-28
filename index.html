@@ -26,8 +26,8 @@
       const w = window.innerWidth;
       const h = window.innerHeight;
 
-      catX += speedX * 1000;
-      catY += speedY * 1000;
+      catX += speedX * 1000000;
+      catY += speedY * 1000000;
 
       // Duvarlardan sektirme
       if (catX > w - 40 || catX < 40) speedX *= -1;
